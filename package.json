@@ -1,0 +1,29 @@
+{
+  "name": "discord.ts",
+  "version": "1.0.0",
+  "description": "a perfect discord api wrapper for typescript",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "none"
+  },
+  "repository": {
+    "type": "git",
+    "url": "none"
+  },
+  "keywords": [
+    "discordapi"
+  ],
+  "author": "akikaki",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^20.0.0",
+    "@types/ws": "^8.5.4",
+    "axios": "^1.4.0",
+    "discord-api-types": "^0.37.41",
+    "node": "^20.1.0",
+    "ws": "^8.13.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
+}
