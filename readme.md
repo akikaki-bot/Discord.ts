@@ -29,8 +29,8 @@ client.on('guildCreate', (guild : Guild) => {
 
 ```
 
-## Is this a inprove the Interaction events?
+## Huh? Missing major events?
 
 Sorry ;( This package is creating now ;(
 
-Maybe Somedays That event was added, Please wait for it. ;(
+Maybe, somedays that event is added, Please wait for it. ;(
