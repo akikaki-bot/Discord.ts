@@ -8,49 +8,15 @@
  *
  *
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Client = exports.BaseClient = void 0;
+exports.Client = void 0;
 const v10_1 = require("discord-api-types/v10");
-const node_events_1 = __importDefault(require("node:events"));
+const baseclient_1 = require("./class/baseclient");
 const ws_1 = require("ws");
-/**
- * The BaseClient extends EventEmitter.
- */
-class BaseClient extends node_events_1.default {
-    constructor(options) {
-        super();
-        this.DiscordAPIVersion = 10;
-        this.DiscordGatewayType = "json";
-        this.Intents = options.intents;
-        this.DiscordGatewayURI ? void 0 : this.__getGateWayURl();
-    }
-    __getGateWayURl() {
-        return __awaiter(this, void 0, void 0, function* () {
-            //  const uri = (
-            //  await new Axios()
-            // .get(`https://discordapp.com/api/gateway`)
-            // ).data() as GatewayGETData
-            this.DiscordGatewayURI = "wss://gateway.discord.gg";
-        });
-    }
-}
-exports.BaseClient = BaseClient;
 /**
  * The Client extends BaseClient
  */
-class Client extends BaseClient {
+class Client extends baseclient_1.BaseClient {
     constructor(options) {
         super(options);
     }
@@ -80,7 +46,7 @@ class Client extends BaseClient {
     }
     __clientUserIdenfity(Data) {
         switch (Data.t) {
-            case "READY":
+            case v10_1.GatewayDispatchEvents.Ready:
                 this.emit('gatewayLogs', "[Gateway => Client] Successfully Login! ");
                 this.user = Data.d.user;
                 this.guilds = Data.d.guilds;
@@ -88,7 +54,7 @@ class Client extends BaseClient {
                 this.SessionID = Data.d.session_id;
                 this.emit('ready', void 0);
                 break;
-            case "GUILD_CREATE":
+            case v10_1.GatewayDispatchEvents.GuildCreate:
                 const IsGuildAlreadyAdded = this.guilds.filter(v => v.id !== Data.d.id);
                 if (IsGuildAlreadyAdded) {
                     IsGuildAlreadyAdded.map(v => this.guilds.push(v));
@@ -96,7 +62,38 @@ class Client extends BaseClient {
                     this.__guildCreate(Data);
                 }
                 break;
+            case v10_1.GatewayDispatchEvents.GuildMemberUpdate:
+                this.emit('guildMemberUpdate', Data.d);
+                break;
+            case v10_1.GatewayDispatchEvents.GuildMemberAdd:
+                this.emit('guildMemberAdd', Data.d);
+                break;
+            case v10_1.GatewayDispatchEvents.GuildMemberRemove:
+                this.emit('guildMemberRemove', Data.d);
+                break;
+            case v10_1.GatewayDispatchEvents.InteractionCreate:
+                this.__interactionCreate(Data);
+                break;
+            case v10_1.GatewayDispatchEvents.MessageCreate:
+                this.emit('gatewayLogs', "[Gateway => Client] Message Recived! ");
+                this.__messageCreate(Data);
+                break;
         }
+    }
+    __interactionCreate(Data) {
+        const interaction = Data.d;
+        switch (interaction.type) {
+            case v10_1.InteractionType.ApplicationCommand:
+                this.emit('interactionCommand', interaction);
+                break;
+            default:
+                this.emit('interactionCreate', interaction);
+                break;
+        }
+    }
+    __messageCreate(Data) {
+        //new Message().cache.set(Data.d,Data.d)
+        this.emit('messageCreate', Data.d);
     }
     __guildCreate(Data) {
         this.emit('guildCreate', Data.d);
@@ -128,7 +125,7 @@ class Client extends BaseClient {
                     browser: "discord.ts",
                     device: "discord.ts"
                 },
-                intents: Math.max(...this.Intents),
+                intents: 21,
                 status: v10_1.PresenceUpdateStatus.Online
             }
         }));

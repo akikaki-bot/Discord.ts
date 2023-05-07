@@ -9,49 +9,30 @@
  */
 
 import {
+    GatewayDispatchEvents,
     GatewayIdentify,
-    GatewayIntentBits,
     GatewayOpcodes,  
+    InteractionType,  
     PresenceUpdateStatus, 
 } from "discord-api-types/v10"
 
 import {
     ClientOptions,
     GatewayEventData,
+    GuildMemberAdd,
+    GuildMemberRemove,
+    GuildMemberUpdate,
+    Interaction,
+    Message,
 } from "./structures/structure"
 
 import { User } from "./class/user"
 import { Guild } from "./class/guild"
-
-import EventEmitter from "node:events"
+import { BaseClient } from "./class/baseclient"
 
 import { WebSocket } from "ws"
 
-/**
- * The BaseClient extends EventEmitter.
- */
-export class BaseClient extends EventEmitter {
 
-    public DiscordGatewayURI : string
-    public Intents : GatewayIntentBits[]
-    public DiscordAPIVersion : number = 10
-    public DiscordGatewayType : string = "json"
-    public SessionID : string
-    
-    constructor(options : ClientOptions) {
-        super()
-        this.Intents = options.intents
-        this.DiscordGatewayURI ? void 0 : this.__getGateWayURl()
-    }
-
-    async __getGateWayURl () {
-      //  const uri = (
-          //  await new Axios()
-           // .get(`https://discordapp.com/api/gateway`)
-           // ).data() as GatewayGETData
-        this.DiscordGatewayURI = "wss://gateway.discord.gg"
-    }
-}
 /**
  * The Client extends BaseClient
  */
@@ -102,7 +83,7 @@ export class Client extends BaseClient {
 
     private __clientUserIdenfity (Data : GatewayEventData<GatewayOpcodes.Identify>) {
         switch(Data.t) {
-            case "READY":
+            case GatewayDispatchEvents.Ready:
                 this.emit('gatewayLogs', "[Gateway => Client] Successfully Login! ")
                 this.user = Data.d.user
                 this.guilds = Data.d.guilds
@@ -112,21 +93,58 @@ export class Client extends BaseClient {
                 this.emit('ready', void 0)
             break;
 
-            case "GUILD_CREATE":
+            case GatewayDispatchEvents.GuildCreate:
                const IsGuildAlreadyAdded = this.guilds.filter(v => v.id !== Data.d.id)
                if(IsGuildAlreadyAdded) {
                   IsGuildAlreadyAdded.map(v => this.guilds.push(v))
                   this.emit('gatewayLogs', `[Gateway => Client] Add new Guild!`)
                   this.__guildCreate(Data)
                }
-               
             break;
-            
+
+            case GatewayDispatchEvents.GuildMemberUpdate:
+                this.emit('guildMemberUpdate', Data.d as GuildMemberUpdate)
+            break;
+
+            case GatewayDispatchEvents.GuildMemberAdd:
+                this.emit('guildMemberAdd', Data.d as GuildMemberAdd)
+            break;
+
+            case GatewayDispatchEvents.GuildMemberRemove:
+                this.emit('guildMemberRemove', Data.d as GuildMemberRemove)
+            break;
+
+            case GatewayDispatchEvents.InteractionCreate:
+                 this.__interactionCreate(Data)
+            break;
+
+            case GatewayDispatchEvents.MessageCreate:
+                this.emit('gatewayLogs',"[Gateway => Client] Message Recived! ")
+                this.__messageCreate(Data)
+            break;
         }
     }
 
+    private __interactionCreate(Data : GatewayEventData<GatewayOpcodes.Dispatch>) {
+        const interaction = Data.d as Interaction
+
+        switch(interaction.type) {
+            case InteractionType.ApplicationCommand:
+                this.emit('interactionCommand', new Interaction(Data.d))
+            break;
+            default:
+                this.emit('interactionCreate', new Interaction(Data.d))
+            break;
+        }
+    }
+
+    private __messageCreate (Data : GatewayEventData<GatewayOpcodes.Dispatch>) {
+        //new Message().cache.set(Data.d,Data.d)
+        this.emit('messageCreate', Data.d as Message)
+    }
+
     private __guildCreate (Data : GatewayEventData<GatewayOpcodes.Dispatch>) {
-        this.emit('guildCreate', Data.d)
+        this.emit('guildCreate', Data.d as Guild)
     }
 
     private __gatewayEventDispatched(Data : GatewayEventData<GatewayOpcodes.Dispatch>) {
@@ -161,7 +179,7 @@ export class Client extends BaseClient {
                         browser : "discord.ts",
                         device : "discord.ts"
                     },
-                    intents : Math.max(...this.Intents),
+                    intents : 21,
                     status : PresenceUpdateStatus.Online
                  } 
               } as GatewayIdentify)
@@ -199,7 +217,13 @@ export declare interface Client {
     on(event :'gatewayEvents', listener: ( data: GatewayEventData ) => void): this
     on(event :'gatewayLogs', listener: ( data: string ) => void): this
     on(event :'ready', listener: () => void): this
-    on(event :'guildCreate', listener: ( data : Guild) => void ): this
-    on(evemt :'interaction', listener: ( data: Object) => void) : this
+    on(event :'guildCreate', listener: ( data : Guild ) => void ): this
+    on(event :'interaction', listener: ( data: Object) => void) : this
+    on(event :'guildMemberUpdate', listener: (data : GuildMemberUpdate ) => void ): this
+    on(event :'guildMemberRemove', listener: (data : GuildMemberRemove ) => void ): this
+    on(event :'guildMemberAdd', listener: (data : GuildMemberAdd ) => void): this
+    on(event : 'messageCreate', listener: ( data : Message ) => void) : this
+    on(event : 'interactionCommand', listener: (data : Interaction) => void): this
+    on(event : 'interactionCreate', listener: (data : Interaction) => void): this
 }
 

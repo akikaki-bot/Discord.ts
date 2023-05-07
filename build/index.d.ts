@@ -7,24 +7,10 @@
  *
  *
  */
-/// <reference types="node" />
-import { GatewayIntentBits } from "discord-api-types/v10";
-import { ClientOptions, GatewayEventData } from "./structures/structure";
+import { ClientOptions, CommandInteraction, GatewayEventData, GuildMemberAdd, GuildMemberRemove, GuildMemberUpdate, Interaction, Message } from "./structures/structure";
 import { User } from "./class/user";
 import { Guild } from "./class/guild";
-import EventEmitter from "node:events";
-/**
- * The BaseClient extends EventEmitter.
- */
-export declare class BaseClient extends EventEmitter {
-    DiscordGatewayURI: string;
-    Intents: GatewayIntentBits[];
-    DiscordAPIVersion: number;
-    DiscordGatewayType: string;
-    SessionID: string;
-    constructor(options: ClientOptions);
-    __getGateWayURl(): Promise<void>;
-}
+import { BaseClient } from "./class/baseclient";
 /**
  * The Client extends BaseClient
  */
@@ -36,6 +22,8 @@ export declare class Client extends BaseClient {
     constructor(options: ClientOptions);
     login(token: string): void;
     private __clientUserIdenfity;
+    private __interactionCreate;
+    private __messageCreate;
     private __guildCreate;
     private __gatewayEventDispatched;
     private __gatewayInitMethod;
@@ -49,5 +37,11 @@ export declare interface Client {
     on(event: 'gatewayLogs', listener: (data: string) => void): this;
     on(event: 'ready', listener: () => void): this;
     on(event: 'guildCreate', listener: (data: Guild) => void): this;
-    on(evemt: 'interaction', listener: (data: Object) => void): this;
+    on(event: 'interaction', listener: (data: Object) => void): this;
+    on(event: 'guildMemberUpdate', listener: (data: GuildMemberUpdate) => void): this;
+    on(event: 'guildMemberRemove', listener: (data: GuildMemberRemove) => void): this;
+    on(event: 'guildMemberAdd', listener: (data: GuildMemberAdd) => void): this;
+    on(event: 'messageCreate', listener: (data: Message) => void): this;
+    on(event: 'interactionCommand', listener: (data: CommandInteraction) => void): this;
+    on(event: 'interactionCreate', listener: (data: Interaction | CommandInteraction) => void): this;
 }

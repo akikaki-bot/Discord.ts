@@ -9,7 +9,7 @@ import {
 import { Snowflake } from "discord-api-types/globals"
 import { APIGuildWelcomeScreen, GuildFeature } from "discord-api-types/v10"
 
-export class Guild implements GuildStructure{
+export class Guild implements GuildStructure {
     id : Snowflake
     name : string
     icon ?: string
