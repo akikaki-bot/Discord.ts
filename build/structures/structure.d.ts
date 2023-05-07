@@ -302,7 +302,6 @@ export declare abstract class Channel {
 }
 export declare abstract class BaseInteraction {
     InteractionVersion: string;
-    abstract post(data: InteractionResponse, id: string, token: string): Promise<any>;
 }
 export interface InteractionResponse {
     type: number;
@@ -311,7 +310,7 @@ export interface InteractionResponse {
 export interface InteractionResponseData {
     content?: string;
 }
-export declare abstract class Interaction extends BaseInteraction {
+export declare class Interaction extends BaseInteraction {
     id: Snowflake;
     application_id: Snowflake;
     type: InteractionType.Ping | InteractionType.ApplicationCommand | InteractionType.ApplicationCommandAutocomplete | InteractionType.MessageComponent | InteractionType.ModalSubmit;
@@ -326,10 +325,8 @@ export declare abstract class Interaction extends BaseInteraction {
     app_permissions?: string;
     locale?: string;
     guild_locale?: string;
-}
-export declare class CommandInteraction extends Interaction {
-    type: InteractionType.ApplicationCommand;
-    post(data: InteractionResponse, token: any, id: any): Promise<any>;
+    constructor(interactionData: Interaction);
+    reply(data: InteractionResponse): Promise<unknown>;
 }
 export declare abstract class Message {
     cache: Cache<string, Message>;

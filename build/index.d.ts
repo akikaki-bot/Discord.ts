@@ -7,7 +7,7 @@
  *
  *
  */
-import { ClientOptions, CommandInteraction, GatewayEventData, GuildMemberAdd, GuildMemberRemove, GuildMemberUpdate, Interaction, Message } from "./structures/structure";
+import { ClientOptions, GatewayEventData, GuildMemberAdd, GuildMemberRemove, GuildMemberUpdate, Interaction, Message } from "./structures/structure";
 import { User } from "./class/user";
 import { Guild } from "./class/guild";
 import { BaseClient } from "./class/baseclient";
@@ -42,6 +42,5 @@ export declare interface Client {
     on(event: 'guildMemberRemove', listener: (data: GuildMemberRemove) => void): this;
     on(event: 'guildMemberAdd', listener: (data: GuildMemberAdd) => void): this;
     on(event: 'messageCreate', listener: (data: Message) => void): this;
-    on(event: 'interactionCommand', listener: (data: CommandInteraction) => void): this;
-    on(event: 'interactionCreate', listener: (data: Interaction | CommandInteraction) => void): this;
+    on(event: 'interactionCreate', listener: (data: Interaction) => void): this;
 }

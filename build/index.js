@@ -11,6 +11,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Client = void 0;
 const v10_1 = require("discord-api-types/v10");
+const structure_1 = require("./structures/structure");
 const baseclient_1 = require("./class/baseclient");
 const ws_1 = require("ws");
 /**
@@ -81,15 +82,7 @@ class Client extends baseclient_1.BaseClient {
         }
     }
     __interactionCreate(Data) {
-        const interaction = Data.d;
-        switch (interaction.type) {
-            case v10_1.InteractionType.ApplicationCommand:
-                this.emit('interactionCommand', interaction);
-                break;
-            default:
-                this.emit('interactionCreate', interaction);
-                break;
-        }
+        this.emit('interactionCreate', new structure_1.Interaction(Data.d));
     }
     __messageCreate(Data) {
         //new Message().cache.set(Data.d,Data.d)

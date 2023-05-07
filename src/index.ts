@@ -22,13 +22,13 @@ import {
     GuildMemberAdd,
     GuildMemberRemove,
     GuildMemberUpdate,
-    Interaction,
     Message,
 } from "./structures/structure"
 
 import { User } from "./class/user"
 import { Guild } from "./class/guild"
 import { BaseClient } from "./class/baseclient"
+import { Interaction } from "./class/interaction"
 
 import { WebSocket } from "ws"
 
@@ -126,16 +126,7 @@ export class Client extends BaseClient {
     }
 
     private __interactionCreate(Data : GatewayEventData<GatewayOpcodes.Dispatch>) {
-        const interaction = Data.d as Interaction
-
-        switch(interaction.type) {
-            case InteractionType.ApplicationCommand:
-                this.emit('interactionCommand', new Interaction(Data.d))
-            break;
-            default:
-                this.emit('interactionCreate', new Interaction(Data.d))
-            break;
-        }
+        this.emit('interactionCreate', new Interaction(Data.d))
     }
 
     private __messageCreate (Data : GatewayEventData<GatewayOpcodes.Dispatch>) {
@@ -223,7 +214,6 @@ export declare interface Client {
     on(event :'guildMemberRemove', listener: (data : GuildMemberRemove ) => void ): this
     on(event :'guildMemberAdd', listener: (data : GuildMemberAdd ) => void): this
     on(event : 'messageCreate', listener: ( data : Message ) => void) : this
-    on(event : 'interactionCommand', listener: (data : Interaction) => void): this
     on(event : 'interactionCreate', listener: (data : Interaction) => void): this
 }
 

@@ -1,7 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Cache = exports.Message = exports.CommandInteraction = exports.Interaction = exports.BaseInteraction = exports.Channel = exports.ApplicationCommandType = exports.ChannelTypes = exports.Guild = exports.GuildIntegrationsUpdate = void 0;
-const axios_1 = require("axios");
+exports.Cache = exports.Message = exports.Interaction = exports.BaseInteraction = exports.Channel = exports.ApplicationCommandType = exports.ChannelTypes = exports.Guild = exports.GuildIntegrationsUpdate = void 0;
+const axios_1 = __importDefault(require("axios"));
 class GuildIntegrationsUpdate {
 }
 exports.GuildIntegrationsUpdate = GuildIntegrationsUpdate;
@@ -41,13 +44,27 @@ class BaseInteraction {
 }
 exports.BaseInteraction = BaseInteraction;
 class Interaction extends BaseInteraction {
-}
-exports.Interaction = Interaction;
-class CommandInteraction extends Interaction {
-    post(data, token, id) {
+    constructor(interactionData) {
+        super();
+        this.id = interactionData.id;
+        this.application_id = interactionData.application_id;
+        this.type = interactionData.type;
+        this.data = interactionData.data;
+        this.guild_id = interactionData.guild_id;
+        this.channel = interactionData.channel;
+        this.member = interactionData.member;
+        this.user = interactionData.user;
+        this.token = interactionData.token;
+        this.version = interactionData.version;
+        this.message = interactionData.message;
+        this.app_permissions = interactionData.app_permissions;
+        this.locale = interactionData.locale;
+        this.guild_locale = interactionData.guild_locale;
+    }
+    reply(data) {
         return new Promise((resolve, reject) => {
-            const URI = `https://discord.com/api/${this.InteractionVersion}/interactions/${id}/${token}/callback`;
-            new axios_1.Axios().post(URI, data)
+            const URI = `https://discord.com/api/v10/interactions/${this.id}/${this.token}/callback`;
+            axios_1.default.post(URI, data)
                 .catch((v) => {
                 reject(v);
             })
@@ -57,7 +74,7 @@ class CommandInteraction extends Interaction {
         });
     }
 }
-exports.CommandInteraction = CommandInteraction;
+exports.Interaction = Interaction;
 class Message {
 }
 exports.Message = Message;
