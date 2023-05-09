@@ -45,4 +45,5 @@ export declare class Guild implements GuildStructure {
     nsfw_level: integer;
     stickers: Array<StickerObject>;
     premium_progress_bar_enabled: boolean;
+    constructor(GuildData: Guild);
 }

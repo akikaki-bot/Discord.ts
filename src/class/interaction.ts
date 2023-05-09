@@ -1,10 +1,11 @@
 import { Snowflake } from "discord-api-types/globals"
-import { BaseInteraction, InteractionResponse, Message, integer } from "../structures/structure"
+import { BaseInteraction, InteractionResponse, InteractionResponseOptions, Message, integer } from "../structures/structure"
 import { APIApplicationCommandInteractionData, InteractionType } from "discord-api-types/v10"
-import { Channel } from "diagnostics_channel"
+import { Channel } from "../structures/structure"
 import { GuildMember } from "./guildmember"
 import { User } from "./user"
 import axios from "axios"
+import { Embed } from "./embed"
 
 export class Interaction extends BaseInteraction {
     id : Snowflake
@@ -21,6 +22,16 @@ export class Interaction extends BaseInteraction {
     app_permissions ?: string
     locale ?: string
     guild_locale ?: string
+
+    /**
+     * 
+     * インタラクションクラスのData内nameをここに代入し、
+     * 
+     * コマンドネームとして汎用性を高めた物です。
+     * 
+     * ※実際のDiscordAPIには存在しない物です※
+     */
+    commandName ?: string
 
     constructor(interactionData : Interaction) {
       super()
@@ -39,12 +50,33 @@ export class Interaction extends BaseInteraction {
       this.app_permissions = interactionData.app_permissions
       this.locale = interactionData.locale
       this.guild_locale = interactionData.guild_locale
+
+      this.commandName = interactionData.data.name
     }
 
-    public reply(data : InteractionResponse){
+    public reply(contentData : InteractionResponseOptions | string){
+        
+        const InteractionBody = 
+        typeof contentData === "string" ?
+         {
+            type : 4,
+            data : {
+                content : contentData
+            }
+         } as InteractionResponse : {
+            type : 4,
+            data : {
+                content : contentData.content
+            }
+         } as InteractionResponse
+
+         if ( typeof contentData !== "string" && contentData.embeds ) {
+            InteractionBody.data.embeds = contentData.embeds.map(v => { return v.toJSON() })
+         }
+
         return new Promise((resolve,reject) => {
             const URI = `https://discord.com/api/v10/interactions/${this.id}/${this.token}/callback`;
-                axios.post(URI, data)
+                axios.post(URI, InteractionBody)
                     .catch((v) => {
                     reject(v);
                 })
@@ -53,4 +85,6 @@ export class Interaction extends BaseInteraction {
                 });
         })
    }
+
+
 } 

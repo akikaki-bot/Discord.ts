@@ -11,8 +11,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Client = void 0;
 const v10_1 = require("discord-api-types/v10");
-const structure_1 = require("./structures/structure");
+const guild_1 = require("./class/guild");
 const baseclient_1 = require("./class/baseclient");
+const interaction_1 = require("./class/interaction");
 const ws_1 = require("ws");
 /**
  * The Client extends BaseClient
@@ -82,14 +83,14 @@ class Client extends baseclient_1.BaseClient {
         }
     }
     __interactionCreate(Data) {
-        this.emit('interactionCreate', new structure_1.Interaction(Data.d));
+        this.emit('interactionCreate', new interaction_1.Interaction(Data.d));
     }
     __messageCreate(Data) {
         //new Message().cache.set(Data.d,Data.d)
         this.emit('messageCreate', Data.d);
     }
     __guildCreate(Data) {
-        this.emit('guildCreate', Data.d);
+        this.emit('guildCreate', new guild_1.Guild(Data.d));
     }
     __gatewayEventDispatched(Data) {
         this.emit('gatewayLogs', `[GatewayEvents! Gateway => Client] GatewayDispached ! = ` + Data.t);

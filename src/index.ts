@@ -135,7 +135,7 @@ export class Client extends BaseClient {
     }
 
     private __guildCreate (Data : GatewayEventData<GatewayOpcodes.Dispatch>) {
-        this.emit('guildCreate', Data.d as Guild)
+        this.emit('guildCreate', new Guild(Data.d))
     }
 
     private __gatewayEventDispatched(Data : GatewayEventData<GatewayOpcodes.Dispatch>) {

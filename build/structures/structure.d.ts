@@ -1,6 +1,7 @@
-import { APIApplicationCommandInteractionData, APIGuildWelcomeScreen, GatewayDispatchEvents, GatewayIntentBits, GatewayOpcodes, GuildFeature, InteractionType, Snowflake } from "discord-api-types/v10";
+import { APIEmbed, APIGuildWelcomeScreen, ComponentType, GatewayDispatchEvents, GatewayIntentBits, GatewayOpcodes, GuildFeature, Snowflake } from "discord-api-types/v10";
 import { User } from "../class/user";
 import { GuildMember } from "../class/guildmember";
+import { Embed } from "../class/embed";
 export interface ClientOptions {
     intents: GatewayIntentBits[];
 }
@@ -125,51 +126,6 @@ export interface Emoji {
     available: boolean | null;
 }
 export interface StickerObject {
-}
-export declare class Guild implements GuildStructure {
-    id: Snowflake;
-    name: string;
-    icon?: string;
-    icon_hash?: string;
-    splash?: string;
-    discovery_splash?: string;
-    owner: boolean | null;
-    owner_id: Snowflake;
-    permissions: string | null;
-    /** @deprecated */
-    region: string | null;
-    afk_channel_id?: string;
-    afk_timeout: integer;
-    widget_enabled: boolean | null;
-    widget_channel_id: boolean | null;
-    verification_level: integer;
-    default_message_notifications: integer;
-    explicit_content_filter: integer;
-    roles: Array<Role>;
-    emojis: Array<Emoji>;
-    features: Array<GuildFeature>;
-    mfa_level: integer;
-    application_id: Snowflake | null;
-    system_channel_id: Snowflake | null;
-    system_channel_flags: integer | null;
-    rules_channel_id: Snowflake | null;
-    max_presences: integer | null;
-    max_members: integer | null;
-    vanity_url_code: string | null;
-    description: string | null;
-    banner: string | null;
-    premium_tier: integer;
-    premium_subscription_count: integer | null;
-    preferred_locale: string;
-    public_updates_channel_id: Snowflake | null;
-    max_video_channel_users: integer | null;
-    max_stage_video_channel_users: integer | null;
-    approximate_member_count: integer | null;
-    approximate_presence_count: integer | null;
-    welcome_screen: APIGuildWelcomeScreen;
-    nsfw_level: integer;
-    stickers: Array<StickerObject>;
-    premium_progress_bar_enabled: boolean;
 }
 export interface ApplicationCommandOptionStructure {
     type: ApplicationCommandType;
@@ -307,26 +263,28 @@ export interface InteractionResponse {
     type: number;
     data: InteractionResponseData;
 }
+export declare class Component<T = Button | SelectMenu> {
+}
+export declare class Button {
+}
+export declare class SelectMenu {
+}
+export interface InteractionResponseOptions {
+    content?: string;
+    embeds?: Embed[];
+    components?: Component[];
+}
+export type APIComponent = {
+    type: ComponentType;
+    components: any[];
+};
 export interface InteractionResponseData {
     content?: string;
-}
-export declare class Interaction extends BaseInteraction {
-    id: Snowflake;
-    application_id: Snowflake;
-    type: InteractionType.Ping | InteractionType.ApplicationCommand | InteractionType.ApplicationCommandAutocomplete | InteractionType.MessageComponent | InteractionType.ModalSubmit;
-    data: APIApplicationCommandInteractionData;
-    guild_id?: Snowflake;
-    channel?: Channel;
-    member?: GuildMember;
-    user?: User;
-    token: string;
-    version: integer;
-    message: Message;
-    app_permissions?: string;
-    locale?: string;
-    guild_locale?: string;
-    constructor(interactionData: Interaction);
-    reply(data: InteractionResponse): Promise<unknown>;
+    embeds?: APIEmbed[];
+    allowed_mentions?: any;
+    flags?: integer;
+    components?: APIComponent;
+    attachments?: any;
 }
 export declare abstract class Message {
     cache: Cache<string, Message>;

@@ -7,10 +7,11 @@
  *
  *
  */
-import { ClientOptions, GatewayEventData, GuildMemberAdd, GuildMemberRemove, GuildMemberUpdate, Interaction, Message } from "./structures/structure";
+import { ClientOptions, GatewayEventData, GuildMemberAdd, GuildMemberRemove, GuildMemberUpdate, Message } from "./structures/structure";
 import { User } from "./class/user";
 import { Guild } from "./class/guild";
 import { BaseClient } from "./class/baseclient";
+import { Interaction } from "./class/interaction";
 /**
  * The Client extends BaseClient
  */

@@ -1,7 +1,9 @@
 import {
    APIApplicationCommand,
     APIApplicationCommandInteractionData,
+    APIEmbed,
     APIGuildWelcomeScreen,
+    ComponentType,
     GatewayDispatchEvents,
     GatewayIntentBits,
     GatewayOpcodes, 
@@ -14,6 +16,7 @@ import { GuildMember } from "../class/guildmember"
 /** @deprecated  */
 import internal from "node:stream"
 import axios from "axios"
+import { Embed } from "../class/embed"
 
 export interface ClientOptions {
     intents : GatewayIntentBits[]
@@ -316,8 +319,29 @@ export interface InteractionResponse {
    data : InteractionResponseData
 }
 
+
+export class Component<T = Button | SelectMenu> {}
+export class Button {}
+export class SelectMenu {}
+
+export interface InteractionResponseOptions {
+   content ?: string
+   embeds ?: Embed[]
+   components ?: Component[]
+}
+
+export type APIComponent = {
+   type : ComponentType
+   components : any[]
+}
+
 export interface InteractionResponseData {
    content ?: string
+   embeds ?: APIEmbed[]
+   allowed_mentions ?: any
+   flags ?: integer
+   components ?: APIComponent
+   attachments ?: any
 }
 
 
