@@ -103,7 +103,7 @@ export class Client extends BaseClient {
             break;
 
             case GatewayDispatchEvents.GuildMemberUpdate:
-                this.emit('guildMemberUpdate', Data.d as GuildMemberUpdate)
+                this.emit('guildMemberUpdate', new GuildMemberUpdate(Data.d))
             break;
 
             case GatewayDispatchEvents.GuildMemberAdd:

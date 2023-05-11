@@ -106,10 +106,37 @@ export interface GuildMemberUpdateStructure {
    deaf ?: boolean
    mute ?: boolean
    pending ?: boolean
-   communication_disabled_until?: string
+   communication_disabled_until ?: string
 }
 
-export interface GuildMemberUpdate extends GuildMemberUpdateStructure {}
+export class GuildMemberUpdate extends GuildMemberUpdateStructure {
+   
+   user : User
+   roles : Array<Role>
+   guild_id : Snowflake
+   nick ?: string
+   avater ?: string
+   joined_at : string
+   permium_since ?: string
+   deaf ?: boolean
+   mute ?: boolean
+   pending ?: boolean
+   communication_disabled_until ?: string
+
+   constructor ( guild : GuildMemberUpdateStructure ) {
+      this.user = guild.user
+      this.roles = guild.roles
+      this.guild_id = guild.guild_id
+      this.nick = guild.nick
+      this.avater = guild.avater
+      this.joined_at = guild.joined_at
+      this.permium_since = guild.premium_since
+      this.deaf = guild.deaf
+      this.mute = guild.mute
+      this.pending = guild.pending
+      this.communication_disabled_until = guild.communication_disabled_until
+   }
+}
 
 //export type GuildMemberStructure = GuildMemberUpdateStructure
 
