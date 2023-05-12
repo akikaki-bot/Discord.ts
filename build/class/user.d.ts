@@ -12,4 +12,5 @@ export declare class User implements UserStructure {
     discriminator?: string;
     bot?: boolean;
     avater?: string;
+    constructor(user: User);
 }

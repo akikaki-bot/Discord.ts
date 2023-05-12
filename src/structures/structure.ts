@@ -1,8 +1,14 @@
 import {
+   APIActionRowComponent,
    APIApplicationCommand,
     APIApplicationCommandInteractionData,
+    APIButtonComponent,
     APIEmbed,
     APIGuildWelcomeScreen,
+    APIMessageActionRowComponent,
+    APIMessageComponentInteractionData,
+    APIModalActionRowComponent,
+    APISelectMenuComponent,
     ComponentType,
     GatewayDispatchEvents,
     GatewayIntentBits,
@@ -10,6 +16,20 @@ import {
     GuildFeature, 
     InteractionType, 
     Snowflake,
+    VideoQualityMode,
+    APIMessage,
+    APIUserApplicationCommandDMInteraction,
+    APIAttachment,
+    APIMessageActivity,
+    APIApplication,
+    APIMessageReference,
+    MessageFlags,
+    APIMessageInteraction,
+    APIChannel,
+    APISticker,
+    APIStickerItem,
+    APIMessageRoleSubscriptionData,
+    APIReaction
 } from "discord-api-types/v10"
 import { User } from "../class/user"
 import { GuildMember } from "../class/guildmember"
@@ -17,6 +37,8 @@ import { GuildMember } from "../class/guildmember"
 import internal from "node:stream"
 import axios from "axios"
 import { Embed } from "../class/embed"
+import { MessageActionRow } from "../class/actionrow"
+import { Button } from "../class/button"
 
 export interface ClientOptions {
     intents : GatewayIntentBits[]
@@ -109,6 +131,23 @@ export interface GuildMemberUpdateStructure {
    communication_disabled_until?: string
 }
 
+export interface BaseInteractionTypes {
+   id : Snowflake
+   application_id : Snowflake
+   type : InteractionType.Ping | InteractionType.ApplicationCommand | InteractionType.ApplicationCommandAutocomplete | InteractionType.MessageComponent | InteractionType.ModalSubmit
+   data : APIApplicationCommandInteractionData | APIMessageComponentInteractionData
+   guild_id ?: Snowflake
+   channel ?: Channel
+   member ?: GuildMember
+   user ?: User
+   token : string
+   version : integer
+   message : Message
+   app_permissions ?: string
+   locale ?: string
+   guild_locale ?: string
+}
+
 export interface GuildMemberUpdate extends GuildMemberUpdateStructure {}
 
 //export type GuildMemberStructure = GuildMemberUpdateStructure
@@ -122,7 +161,7 @@ export class GuildIntegrationsUpdate implements GuildIntegrationsUpdateStructure
    guild_id : Snowflake
 }
 
-export interface Role {
+export class Role {
    id : Snowflake
    name : string
    color : integer
@@ -134,6 +173,20 @@ export interface Role {
    managed : boolean
    mentionable : boolean
    tags : RoleTagsStructure
+
+   constructor ( role : Role ) {
+      this.id = role.id
+      this.name = role.name
+      this.color = role.color
+      this.hoist = role.hoist
+      this.icon = role.icon
+      this.unicode_emoji = role.unicode_emoji
+      this.position = role.position
+      this.permissions = role.permissions
+      this.managed = role.managed
+      this.mentionable = role.mentionable
+      this.tags = role.tags
+   } 
 }
 
 export type RoleTagsStructure = {
@@ -260,7 +313,8 @@ export interface Channel {
    parent_id ?: Snowflake
    last_pin_timestamp ?: string
    rtc_region ?: string
-   video_quality_mode : integer
+   
+   video_quality_mode : VideoQualityMode
    message_count ?: integer
    member_count ?: integer
    thread_metadata ?: ThreadMetaData
@@ -275,6 +329,7 @@ export interface Channel {
    default_thread_rate_limit_per_user ?: integer
    default_sort_order ?: integer
    default_forum_layout ?: integer
+
 }
 
 export interface ReactionObject {
@@ -310,29 +365,25 @@ export abstract class Channel {
 }
 
 
-export abstract class BaseInteraction {
-   public InteractionVersion : string = "v10"
-}
 
 export interface InteractionResponse {
    type : number
    data : InteractionResponseData
 }
 
+export class SelectMenu {
 
-export class Component<T = Button | SelectMenu> {}
-export class Button {}
-export class SelectMenu {}
+}
 
 export interface InteractionResponseOptions {
    content ?: string
    embeds ?: Embed[]
-   components ?: Component[]
+   components ?: MessageActionRow<Button>[]
 }
 
 export type APIComponent = {
    type : ComponentType
-   components : any[]
+   components : APIButtonComponent[]
 }
 
 export interface InteractionResponseData {
@@ -340,14 +391,51 @@ export interface InteractionResponseData {
    embeds ?: APIEmbed[]
    allowed_mentions ?: any
    flags ?: integer
-   components ?: APIComponent
+   components ?: APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>[]
    attachments ?: any
 }
 
+export interface ChannelMention {}
 
-export abstract class Message {
+export class Message {
+
+    id: Snowflake;
+    channel_id: Snowflake;
+    author: User;
+    content: string;
+    timestamp: string;
+    edited_timestamp: string | null;
+    tts: boolean;
+    mention_everyone: boolean;
+    mentions: User[];
+    mention_roles: Role[] | string[];
+    mention_channels?: ChannelMention[];
+    attachments: APIAttachment[];
+    embeds: APIEmbed[];
+    reactions?: ReactionObject[] | APIReaction[];
+    nonce?: string | number;
+    pinned: boolean;
+    webhook_id?: Snowflake;
+    type: integer;
+    activity?: APIMessageActivity;
+    application?: Partial<APIApplication>;
+    application_id?: Snowflake;
+    message_reference?: APIMessageReference;
+    flags?: MessageFlags;
+    referenced_message?: APIMessage | null;
+    interaction?: APIMessageInteraction;
+    thread?: APIChannel;
+    components?: APIActionRowComponent<APIMessageActionRowComponent>[];
+    sticker_items?: APIStickerItem[];
+    stickers?: APISticker[];
+    position?: number;
+    role_subscription_data?: APIMessageRoleSubscriptionData;
+
+   constructor() {
+
+   }
    
-   cache : Cache<string,Message>
+   cache ?: Cache<string,Message>
 }
 
 export interface GuildMemberRemove {
@@ -361,4 +449,9 @@ export interface GuildMemberAdd extends GuildMember {
 
 const data : GuildMemberAdd = { } as GuildMemberAdd
 
-export class Cache<K,V> extends Map<K,V> {}
+export class Cache<K,V> extends Map<K,V> {
+
+   constructor() {
+      super()
+   }
+}

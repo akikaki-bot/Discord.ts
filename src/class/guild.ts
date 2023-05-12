@@ -4,6 +4,7 @@ import {
     Emoji,
     integer,
     StickerObject,
+    Cache,
 } from "../structures/structure"
 
 import { Snowflake } from "discord-api-types/globals"

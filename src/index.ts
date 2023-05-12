@@ -9,6 +9,7 @@
  */
 
 import {
+    APIApplicationCommandInteractionData,
     GatewayDispatchEvents,
     GatewayIdentify,
     GatewayOpcodes,  
@@ -28,7 +29,7 @@ import {
 import { User } from "./class/user"
 import { Guild } from "./class/guild"
 import { BaseClient } from "./class/baseclient"
-import { Interaction } from "./class/interaction"
+import { ButtonInteraction, Interaction, MessageComponentInteraction } from "./class/interaction"
 
 import { WebSocket } from "ws"
 
@@ -126,7 +127,7 @@ export class Client extends BaseClient {
     }
 
     private __interactionCreate(Data : GatewayEventData<GatewayOpcodes.Dispatch>) {
-        this.emit('interactionCreate', new Interaction(Data.d))
+        this.emit('interactionCreate', new MessageComponentInteraction(Data.d))
     }
 
     private __messageCreate (Data : GatewayEventData<GatewayOpcodes.Dispatch>) {

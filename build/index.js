@@ -83,7 +83,7 @@ class Client extends baseclient_1.BaseClient {
         }
     }
     __interactionCreate(Data) {
-        this.emit('interactionCreate', new interaction_1.Interaction(Data.d));
+        this.emit('interactionCreate', new interaction_1.MessageComponentInteraction(Data.d));
     }
     __messageCreate(Data) {
         //new Message().cache.set(Data.d,Data.d)

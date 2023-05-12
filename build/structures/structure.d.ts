@@ -1,7 +1,9 @@
-import { APIEmbed, APIGuildWelcomeScreen, ComponentType, GatewayDispatchEvents, GatewayIntentBits, GatewayOpcodes, GuildFeature, Snowflake } from "discord-api-types/v10";
+import { APIActionRowComponent, APIApplicationCommandInteractionData, APIButtonComponent, APIEmbed, APIGuildWelcomeScreen, APIMessageActionRowComponent, APIMessageComponentInteractionData, APIModalActionRowComponent, ComponentType, GatewayDispatchEvents, GatewayIntentBits, GatewayOpcodes, GuildFeature, InteractionType, Snowflake, VideoQualityMode, APIMessage, APIAttachment, APIMessageActivity, APIApplication, APIMessageReference, MessageFlags, APIMessageInteraction, APIChannel, APISticker, APIStickerItem, APIMessageRoleSubscriptionData, APIReaction } from "discord-api-types/v10";
 import { User } from "../class/user";
 import { GuildMember } from "../class/guildmember";
 import { Embed } from "../class/embed";
+import { MessageActionRow } from "../class/actionrow";
+import { Button } from "../class/button";
 export interface ClientOptions {
     intents: GatewayIntentBits[];
 }
@@ -86,6 +88,22 @@ export interface GuildMemberUpdateStructure {
     pending?: boolean;
     communication_disabled_until?: string;
 }
+export interface BaseInteractionTypes {
+    id: Snowflake;
+    application_id: Snowflake;
+    type: InteractionType.Ping | InteractionType.ApplicationCommand | InteractionType.ApplicationCommandAutocomplete | InteractionType.MessageComponent | InteractionType.ModalSubmit;
+    data: APIApplicationCommandInteractionData | APIMessageComponentInteractionData;
+    guild_id?: Snowflake;
+    channel?: Channel;
+    member?: GuildMember;
+    user?: User;
+    token: string;
+    version: integer;
+    message: Message;
+    app_permissions?: string;
+    locale?: string;
+    guild_locale?: string;
+}
 export interface GuildMemberUpdate extends GuildMemberUpdateStructure {
 }
 export interface GuildIntegrationsUpdateStructure {
@@ -94,7 +112,7 @@ export interface GuildIntegrationsUpdateStructure {
 export declare class GuildIntegrationsUpdate implements GuildIntegrationsUpdateStructure {
     guild_id: Snowflake;
 }
-export interface Role {
+export declare class Role {
     id: Snowflake;
     name: string;
     color: integer;
@@ -106,6 +124,7 @@ export interface Role {
     managed: boolean;
     mentionable: boolean;
     tags: RoleTagsStructure;
+    constructor(role: Role);
 }
 export type RoleTagsStructure = {
     bot_id: Snowflake | null;
@@ -221,7 +240,7 @@ export interface Channel {
     parent_id?: Snowflake;
     last_pin_timestamp?: string;
     rtc_region?: string;
-    video_quality_mode: integer;
+    video_quality_mode: VideoQualityMode;
     message_count?: integer;
     member_count?: integer;
     thread_metadata?: ThreadMetaData;
@@ -256,38 +275,65 @@ export interface OverWrite {
 export declare abstract class Channel {
     send(content: string): void;
 }
-export declare abstract class BaseInteraction {
-    InteractionVersion: string;
-}
 export interface InteractionResponse {
     type: number;
     data: InteractionResponseData;
-}
-export declare class Component<T = Button | SelectMenu> {
-}
-export declare class Button {
 }
 export declare class SelectMenu {
 }
 export interface InteractionResponseOptions {
     content?: string;
     embeds?: Embed[];
-    components?: Component[];
+    components?: MessageActionRow<Button>[];
 }
 export type APIComponent = {
     type: ComponentType;
-    components: any[];
+    components: APIButtonComponent[];
 };
 export interface InteractionResponseData {
     content?: string;
     embeds?: APIEmbed[];
     allowed_mentions?: any;
     flags?: integer;
-    components?: APIComponent;
+    components?: APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>[];
     attachments?: any;
 }
-export declare abstract class Message {
-    cache: Cache<string, Message>;
+export interface ChannelMention {
+}
+export declare class Message {
+    id: Snowflake;
+    channel_id: Snowflake;
+    author: User;
+    content: string;
+    timestamp: string;
+    edited_timestamp: string | null;
+    tts: boolean;
+    mention_everyone: boolean;
+    mentions: User[];
+    mention_roles: Role[] | string[];
+    mention_channels?: ChannelMention[];
+    attachments: APIAttachment[];
+    embeds: APIEmbed[];
+    reactions?: ReactionObject[] | APIReaction[];
+    nonce?: string | number;
+    pinned: boolean;
+    webhook_id?: Snowflake;
+    type: integer;
+    activity?: APIMessageActivity;
+    application?: Partial<APIApplication>;
+    application_id?: Snowflake;
+    message_reference?: APIMessageReference;
+    flags?: MessageFlags;
+    referenced_message?: APIMessage | null;
+    interaction?: APIMessageInteraction;
+    thread?: APIChannel;
+    components?: APIActionRowComponent<APIMessageActionRowComponent>[];
+    sticker_items?: APIStickerItem[];
+    stickers?: APISticker[];
+    position?: number;
+    role_subscription_data?: APIMessageRoleSubscriptionData;
+    constructor();
+    cache?: Cache<string, Message>;
 }
 export interface GuildMemberRemove {
     guild_id: Snowflake;
@@ -297,4 +343,5 @@ export interface GuildMemberAdd extends GuildMember {
     guild_id: Snowflake;
 }
 export declare class Cache<K, V> extends Map<K, V> {
+    constructor();
 }

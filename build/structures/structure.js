@@ -1,9 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Cache = exports.Message = exports.SelectMenu = exports.Button = exports.Component = exports.BaseInteraction = exports.Channel = exports.ApplicationCommandType = exports.ChannelTypes = exports.GuildIntegrationsUpdate = void 0;
+exports.Cache = exports.Message = exports.SelectMenu = exports.Channel = exports.ApplicationCommandType = exports.ChannelTypes = exports.Role = exports.GuildIntegrationsUpdate = void 0;
 class GuildIntegrationsUpdate {
 }
 exports.GuildIntegrationsUpdate = GuildIntegrationsUpdate;
+class Role {
+    constructor(role) {
+        this.id = role.id;
+        this.name = role.name;
+        this.color = role.color;
+        this.hoist = role.hoist;
+        this.icon = role.icon;
+        this.unicode_emoji = role.unicode_emoji;
+        this.position = role.position;
+        this.permissions = role.permissions;
+        this.managed = role.managed;
+        this.mentionable = role.mentionable;
+        this.tags = role.tags;
+    }
+}
+exports.Role = Role;
 var ChannelTypes;
 (function (ChannelTypes) {
     ChannelTypes[ChannelTypes["GUILD_TEXT"] = 0] = "GUILD_TEXT";
@@ -30,25 +46,18 @@ class Channel {
     }
 }
 exports.Channel = Channel;
-class BaseInteraction {
-    constructor() {
-        this.InteractionVersion = "v10";
-    }
-}
-exports.BaseInteraction = BaseInteraction;
-class Component {
-}
-exports.Component = Component;
-class Button {
-}
-exports.Button = Button;
 class SelectMenu {
 }
 exports.SelectMenu = SelectMenu;
 class Message {
+    constructor() {
+    }
 }
 exports.Message = Message;
 const data = {};
 class Cache extends Map {
+    constructor() {
+        super();
+    }
 }
 exports.Cache = Cache;
