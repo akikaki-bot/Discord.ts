@@ -9,9 +9,9 @@
  */
 
 import {
-    APIApplicationCommandInteractionData,
     GatewayDispatchEvents,
     GatewayIdentify,
+    GatewayInteractionCreateDispatchData,
     GatewayOpcodes,  
     InteractionType,  
     PresenceUpdateStatus, 
@@ -20,6 +20,7 @@ import {
 import {
     ClientOptions,
     GatewayEventData,
+    GeneralGatewayEventData,
     GuildMemberAdd,
     GuildMemberRemove,
     GuildMemberUpdate,
@@ -29,7 +30,7 @@ import {
 import { User } from "./class/user"
 import { Guild } from "./class/guild"
 import { BaseClient } from "./class/baseclient"
-import { ButtonInteraction, Interaction, MessageComponentInteraction } from "./class/interaction"
+import { CommandInteraction, Interaction, MessageComponentInteraction, SlashComponentInteraction } from "./class/interaction"
 
 import { WebSocket } from "ws"
 
@@ -55,7 +56,7 @@ export class Client extends BaseClient {
         this.Gateway = new WebSocket(this.DiscordGatewayURI+`?v=${this.DiscordAPIVersion}&encoding=${this.DiscordGatewayType}`)
         this.Gateway.onmessage = (GatewayMessage : any ) => {
             const Data = JSON.parse(GatewayMessage.data) as GatewayEventData
-            this.emit('gatewayEvents', Data.op)
+            this.emit('gatewayEvents', Data.d)
 
             switch(Data.op) {
                 case GatewayOpcodes.Hello:
@@ -104,15 +105,15 @@ export class Client extends BaseClient {
             break;
 
             case GatewayDispatchEvents.GuildMemberUpdate:
-                this.emit('guildMemberUpdate', Data.d as GuildMemberUpdate)
+                this.emit('guildMemberUpdate', new GuildMemberUpdate(Data.d))
             break;
 
             case GatewayDispatchEvents.GuildMemberAdd:
-                this.emit('guildMemberAdd', Data.d as GuildMemberAdd)
+                this.emit('guildMemberAdd', new GuildMemberAdd(Data.d))
             break;
 
             case GatewayDispatchEvents.GuildMemberRemove:
-                this.emit('guildMemberRemove', Data.d as GuildMemberRemove)
+                this.emit('guildMemberRemove', new GuildMemberRemove(Data.d))
             break;
 
             case GatewayDispatchEvents.InteractionCreate:
@@ -126,8 +127,16 @@ export class Client extends BaseClient {
         }
     }
 
-    private __interactionCreate(Data : GatewayEventData<GatewayOpcodes.Dispatch>) {
-        this.emit('interactionCreate', new MessageComponentInteraction(Data.d))
+    private __interactionCreate(Data : GeneralGatewayEventData<GatewayInteractionCreateDispatchData>) {
+
+       if(Data.d.type === InteractionType.ApplicationCommand) {
+           this.emit('interactionCreate', new SlashComponentInteraction(Data.d as any))
+       }
+
+       else if(Data.d.type === InteractionType.MessageComponent) {
+        this.emit('interactionCreate', new MessageComponentInteraction(Data.d as any))
+       }
+
     }
 
     private __messageCreate (Data : GatewayEventData<GatewayOpcodes.Dispatch>) {
@@ -210,7 +219,6 @@ export declare interface Client {
     on(event :'gatewayLogs', listener: ( data: string ) => void): this
     on(event :'ready', listener: () => void): this
     on(event :'guildCreate', listener: ( data : Guild ) => void ): this
-    on(event :'interaction', listener: ( data: Object) => void) : this
     on(event :'guildMemberUpdate', listener: (data : GuildMemberUpdate ) => void ): this
     on(event :'guildMemberRemove', listener: (data : GuildMemberRemove ) => void ): this
     on(event :'guildMemberAdd', listener: (data : GuildMemberAdd ) => void): this

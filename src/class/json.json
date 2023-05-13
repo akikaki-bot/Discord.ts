@@ -1,4 +1,97 @@
 {
-  "data": {"type":4,"data":{"content":"nubejsondayo","components":[{"type":1,"components":[{"custom_id":"hi","style":1,"label":"nube","type":2},{"custom_id":"hi","style":1,"label":"nube","type":2}]},{"type":1,"components":[{"custom_id":"hi","style":1,"label":"nube","type":2},{"custom_id":"hi","style":1,"label":"nube","type":2}]}],"embeds":[{"title":"これは てすと","description":"てすと２てすと３","color":null},{"title":"これはてすと2","description":"てすと２てすと３2","color":null}]}}
+  "version": 1,
+  "type": 3,
+  "token": "'aW50ZXJhY3Rpb246MTEwNjc1MDIwMTEyNjk4NTc5ODp3dmZGWnRCQlJvNUZOR2w3VVFzVVR4UzVxTVdXQXRnTVBxMm9qcmNGSU54RFJFOUVBMVh5WlZ1V0lrTDJHSFhDc1dPNFVTWUhHcHNxZnM5ZEllOWZGSUkwZGpBd0JmenpkUkNJNTZnNVpYVmdxeTlHcENnaXlhcmU4SWxSQUtzeg",
+  "message": {
+    "webhook_id": '886964870375964672',
+    "type": 20,
+    "tts": false,
+    "timestamp": '2023-05-13T01:10:05.628000+00:00',
+    "pinned": false,
+    "mentions": [],
+    "mention_roles": [],
+    "mention_everyone": false,
+    "interaction": {
+      "user": [Object],
+      "type": 2,
+      "name": 'ticketpanel_send',
+      "id": '1106750179803148288'
+    },
+    "id": '1106750181225013258',
+    "flags": 0,
+    "embeds": [ [Object], [Object] ],
+    "edited_timestamp": null,
+    "content": 'nubejsondayo',
+    "components": [ [Object], [Object] ],
+    "channel_id": '980751060777992212',
+    "author": {
+      username: 'ぷらいすれす',
+      public_flags: 0,
+      id: '886964870375964672',
+      global_name: null,
+      display_name: null,
+      discriminator: '7396',
+      bot: true,
+      avatar_decoration: null,
+      avatar: '8d25efbc3c6fe5f3916de2453e7d0b87'
+    },
+    attachments: [],
+    application_id: '886964870375964672'
+  },
+  member: {
+    user: {
+      username: 'あきかき',
+      public_flags: 4194560,
+      id: '536489930080256011',
+      global_name: null,
+      display_name: null,
+      discriminator: '1919',
+      avatar_decoration: null,
+      avatar: 'a_f4163cddaf12a72e75bf13b7a591bb3e'
+    },
+    roles: [
+      '884759056407994378',
+      '982525664747999252',
+      '934655371212124280',
+      '884761254017761341',
+      '939428782496952350'
+    ],
+    premium_since: null,
+    permissions: '140737488355327',
+    pending: false,
+    nick: null,
+    mute: false,
+    joined_at: '2021-09-05T02:15:22.520000+00:00',
+    flags: 0,
+    deaf: false,
+    communication_disabled_until: null,
+    avatar: null
+  },
+  locale: 'ja',
+  id: '1106750201126985798',
+  guild_locale: 'en-US',
+  guild_id: '883898072323739700',
+  entitlements: [],
+  entitlement_sku_ids: [],
+  data: { custom_id: 'hi', component_type: 2 },
+  channel_id: '980751060777992212',
+  channel: {
+    type: 0,
+    topic: null,
+    rate_limit_per_user: 21600,
+    position: 0,
+    permissions: '140737488355327',
+    parent_id: null,
+    nsfw: true,
+    name: '📝｜いろいろ',
+    last_pin_timestamp: '2022-12-27T01:05:13+00:00',
+    last_message_id: '1106750181225013258',
+    id: '980751060777992212',
+    icon_emoji: null,
+    guild_id: '883898072323739700',
+    flags: 0,
+    default_thread_rate_limit_per_user: 0
+  },
+  application_id: '886964870375964672',
+  app_permissions: '140737488355327'
 }
-

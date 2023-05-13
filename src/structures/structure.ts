@@ -51,6 +51,13 @@ export interface GatewayEventData<T = GatewayOpcodes> {
    d : any
 }
 
+export interface GeneralGatewayEventData<T> {
+   t ?: GatewayDispatchEvents
+   s ?: integer
+   op : integer
+   d : T
+}
+
 export type integer = number
 
 export type GatewayGETData = {
@@ -128,7 +135,7 @@ export interface GuildMemberUpdateStructure {
    deaf ?: boolean
    mute ?: boolean
    pending ?: boolean
-   communication_disabled_until?: string
+   communication_disabled_until ?: string
 }
 
 export interface BaseInteractionTypes {
@@ -148,7 +155,33 @@ export interface BaseInteractionTypes {
    guild_locale ?: string
 }
 
-export interface GuildMemberUpdate extends GuildMemberUpdateStructure {}
+export class GuildMemberUpdate implements GuildMemberUpdateStructure {
+   user : User
+   roles : Array<Role>
+   guild_id : Snowflake
+   nick ?: string
+   avater ?: string
+   joined_at : string
+   premium_since ?: string
+   deaf ?: boolean
+   mute ?: boolean
+   pending ?: boolean
+   communication_disabled_until ?: string
+
+   constructor(guildData : GuildMemberUpdate) {
+      this.user = guildData.user
+      this.roles = guildData.roles
+      this.guild_id = guildData.guild_id
+      this.nick = guildData.nick
+      this.avater = guildData.avater
+      this.joined_at = guildData.joined_at
+      this.premium_since = guildData.premium_since
+      this.deaf = guildData.deaf
+      this.mute = guildData.mute
+      this.pending = guildData.pending
+      this.communication_disabled_until = guildData.communication_disabled_until
+   }
+}
 
 //export type GuildMemberStructure = GuildMemberUpdateStructure
 
@@ -438,13 +471,23 @@ export class Message {
    cache ?: Cache<string,Message>
 }
 
-export interface GuildMemberRemove {
+export class GuildMemberRemove {
    guild_id : Snowflake
    user : User
+
+   constructor ( guildData : GuildMemberRemove ) {
+       this.guild_id = guildData.guild_id
+       this.user = guildData.user
+   }
 }
 
-export interface GuildMemberAdd extends GuildMember {
+export class GuildMemberAdd extends GuildMember {
      guild_id : Snowflake
+
+     constructor(guildData : GuildMemberUpdate & GuildMember) {
+      super(guildData)
+        this.guild_id = guildData.guild_id
+     }
 }
 
 const data : GuildMemberAdd = { } as GuildMemberAdd
